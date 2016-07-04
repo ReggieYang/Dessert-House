@@ -1,0 +1,10 @@
+/action/
+/applicationContext.xml
+/beans/
+/dao/
+/enums/
+/hibernate.cfg.xml
+/model/
+/servelet/
+/service/
+/struts.xml

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.action.excludePattern" value="/public/*" />
+
+	<package name="piwang" namespace="" extends="struts-default">
+		<action name="*">
+			<result>/WEB-INF/static/{1}</result>
+		</action>
+	</package>
+	
+	
+	
+	
+	<package name="User" namespace="/user" extends="struts-default">
+		<action name="login" class="action.testAction">
+			<result name="error">/WEB-INF/user/WrongLoginForm.jsp</result>
+			<result name="success" type='redirectAction'>user/cardinfopage</result>
+		</action>
+		<action name="register" class="action.testAction" method="register">
+			<result name="success" type='redirectAction'>user/cardinfopage</result>
+		</action>
+		 <action name="loginpage">
+			<result>/WEB-INF/user/loginForm.jsp</result> 
+		 </action> 
+		<action name="personalinfopage">
+			<result>/WEB-INF/user/PersonalInfo.jsp</result>
+		</action>
+		<action name="paypage">
+			<result>/WEB-INF/user/Pay.jsp</result>
+		</action>
+		<action name="payrecordpage" class="action.testAction" method="getPayRecord">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/NewFile.jsp</result>
+		</action>
+		<action name="cardinfopage" class="action.testAction" method="getCardInfo">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/CardInfo.jsp</result>
+		</action>
+		<action name="salerecordpage" class="action.testAction" method="getSaleRecord">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/SaleRecord.jsp</result>
+		</action>
+		<action name="pay" class="action.testAction" method="pay">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/Pay.jsp</result>
+		</action>
+		<action name="changeinfo" class="action.testAction" method="modifyPersonalInfo">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/PersonalInfo.jsp</result>
+		</action>
+		<action name="exchangecredit" class="action.testAction" method="exchangeCredit">
+			<!-- 定义三个逻辑视图和物理资源之间的映射 -->
+			<result name="success">/WEB-INF/user/CardInfo.jsp</result>
+		</action>
+		<action name="validate" class="action.testAction" method="makevalidate">
+			<result name="success" type="redirectAction">user/cardinfopage</result>
+			<result name="error">/WEB-INF/user/WrongCardInfo.jsp</result>
+		</action>
+		<action name="commoditylist" class="action.testAction" method="showCommodityList">
+			<result name="success">/WEB-INF/user/Reserve.jsp</result>
+		</action>
+		<action name="addtocart" class="action.testAction" method="addCart">
+			<result name="success">/WEB-INF/user/Reserve.jsp</result>
+		</action>
+		<action name="cart">
+			<result>/WEB-INF/user/ShoppingCart.jsp</result>
+		</action>
+		<action name="delcom" class="action.testAction" method="deleteCommodityfromCart">
+			<result type="redirectAction">user/cart</result>
+		</action>
+		<action name="payforcart" class="action.testAction" method="payforCart">
+			<result name="success" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="cancelreserve" class="action.testAction" method="cancelReserve">
+			<result name="success" type="redirectAction">user/salerecordpage</result>
+		</action>
+		
+		<action name="stopvalid" class="action.testAction" method="stopCustomer">
+			<result name="success" type="redirectAction">user/cardinfopage</result>
+		</action>
+		
+	</package>
+	
+	
+	<package name="Staff" namespace="/staff" extends="struts-default">
+		<action name="login" class="action.StaffAction">
+			<result name="admin" type="redirectAction">staff/storelist</result>
+			<result name="headwaiter" type="redirectAction">staff/planhome</result>
+			<result name="waiter" type="redirectAction">staff/sale</result>
+			<result name="manager" type="redirectAction">staff/mplan</result>
+		</action>
+		
+		<action name="sale" class="action.WaiterAction" method="showCommodity">
+			<result>/WEB-INF/staff/Sale.jsp</result>
+		</action>
+
+		 <action name="loginpage">
+			<result>/WEB-INF/staff/loginForm.jsp</result> 
+		 </action> 
+		<action name="storemanagementpage">
+			<result>/WEB-INF/staff/StoreManagement.jsp</result>
+		</action>
+		<action name="waitermanagementpage">
+			<result>/WEB-INF/staff/WaiterManagement</result>
+		</action>
+		<action name="setstore" class="action.StaffAction" method="setStore">
+			<result>/WEB-INF/staff/StoreManagement.jsp</result>
+		</action>
+		<action name="setwaiter" class="action.StaffAction" method="setWaiter">
+			<result>/WEB-INF/staff/WaiterManagement.jsp</result>
+		</action>
+		<action name="changeinfo" class="action.testAction" method="modifyPersonalInfo">
+			<result name="success">/WEB-INF/user/PersonalInfo.jsp</result>
+		</action>
+		
+		<action name="customerinfo" class="action.StaffAction" method="getCustomerInfo">
+			<result name="success">/WEB-INF/staff/CustomerInfo.jsp</result>
+		</action>
+		
+		<action name="addtocart" class="action.WaiterAction" method="addCart">
+			<result name="success">/WEB-INF/staff/Sale</result>
+		</action>
+		<action name="cart">
+			<result>/WEB-INF/staff/ShoppingCart.jsp</result>
+		</action>
+		<action name="delcom" class="action.WaiterAction" method="deleteCommodityfromCart">
+			<result type="redirectAction">staff/cart</result>
+		</action>
+		<action name="payforcart" class="action.WaiterAction" method="payforCart">
+			<result name="success" type="redirectAction">staff/cart</result>
+			<result name="nobalance" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="payrecord" class="action.WaiterAction" method="getPayRecord">
+			<result name="success">/WEB-INF/staff/CustomerPayRecord.jsp</result>
+			<result name="nobalance" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="salerecord" class="action.WaiterAction" method="getSaleRecord">
+			<result name="success">/WEB-INF/staff/CustomerSaleRecord.jsp</result>
+			<result name="nobalance" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="confirmreserve" class="action.WaiterAction" method="confirmReserve">
+			<result name="success">/WEB-INF/staff/CustomerSaleRecord.jsp</result>
+		</action>
+		
+		<action name="cinfo" class="action.WaiterAction" method="getCustomerInfo">
+			<result name="success">/WEB-INF/staff/CustomerInfo.jsp</result>
+		</action>
+		
+		<action name="sinfo">
+			<result name="success">/WEB-INF/staff/Staff.jsp</result>
+		</action>
+		
+		<action name="changeinfo" class="action.WaiterAction" method="changeWaiterInfo">
+			<result name="success">/WEB-INF/staff/Staff.jsp</result>
+		</action>
+		
+		<action name="storelist" class="action.AdminAction" method="showStore">
+			<result name="success">/WEB-INF/staff/Store.jsp</result>
+		</action>
+		
+		<action name="deletestore" class="action.AdminAction" method="deleteStore">
+			<result name="success" type="redirectAction">staff/storelist</result>
+		</action>
+		
+		<action name="addstore" class="action.AdminAction" method="addStore">
+			<result name="success" type="redirectAction">staff/storelist</result>
+		</action>
+		
+		<action name="modifystore" class="action.AdminAction" method="modifyStore">
+			<result name="success" type="redirectAction">staff/storelist</result>
+		</action>
+		
+		<action name="waiterlist" class="action.AdminAction" method="showWaiter">
+			<result name="success">/WEB-INF/staff/WaiterManagement.jsp</result>
+		</action>
+		<action name="addwaiter" class="action.AdminAction" method="addWaiter">
+			<result name="success" type="redirectAction">staff/waiterlist</result>
+		</action>
+		
+		<action name="deletewaiter" class="action.AdminAction" method="deleteWaiter">
+			<result name="success" type="redirectAction">staff/waiterlist</result>
+		</action>
+		
+		<action name="modifywaiter" class="action.AdminAction" method="modifyWaiter">
+			<result name="success" type="redirectAction">staff/waiterlist</result>
+		</action>
+		
+		<action name="planhome" class="action.HeadWaiterAction" method="showCommodity">
+			<result name="success">/WEB-INF/staff/Planhome.jsp</result>
+		</action>
+		
+		<action name="plandetail">
+			<result name="success">/WEB-INF/staff/PlanDetail.jsp</result>
+		</action>
+		
+		<action name="submitplan" class="action.HeadWaiterAction" method="submitPlan">
+			<result name="success" type="redirectAction">staff/planlist</result>
+		</action>
+		
+		<action name="deletefromplan" class="action.HeadWaiterAction" method="deleteCommodity">
+			<result name="success" type="redirectAction">staff/plandetail</result>
+		</action>
+		
+		<action name="addtoplan" class="action.HeadWaiterAction" method="addtoPlan">
+			<result name="success" type="redirectAction">staff/plandetail</result>
+		</action>
+		
+		<action name="planlist" class="action.HeadWaiterAction" method="showSalePlan">
+			<result name="success">/WEB-INF/staff/SalePlan.jsp</result>
+		</action>
+		
+		<action name="loadplan" class="action.HeadWaiterAction" method="loadPlan">
+			<result name="success" type="redirectAction">staff/plandetail</result>
+		</action>
+		
+		<action name="payrecord2" class="action.WaiterAction" method="getPayRecord">
+			<result name="success">/WEB-INF/staff/CustomerPayRecord2.jsp</result>
+			<result name="nobalance" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="salerecord2" class="action.WaiterAction" method="getSaleRecord">
+			<result name="success">/WEB-INF/staff/CustomerSaleRecord2.jsp</result>
+			<result name="nobalance" type="redirectAction">staff/cart</result>
+		</action>
+		
+		<action name="cinfo2" class="action.WaiterAction" method="getCustomerInfo">
+			<result name="success">/WEB-INF/staff/CustomerInfo2.jsp</result>
+		</action>
+		
+		<action name="sinfo2">
+			<result name="success">/WEB-INF/staff/Staff2.jsp</result>
+		</action>
+		
+		<action name="mplan" class="action.ManagerAction" method="showPlan">
+			<result name="success">/WEB-INF/staff/Manager.jsp</result>
+		</action>
+		
+		<action name="approveplan" class="action.ManagerAction" method="approvePlan">
+			<result name="success" type="redirectAction">staff/mplan</result>
+		</action>
+		
+		<action name="rejectplan" class="action.ManagerAction" method="rejectPlan">
+			<result name="success" type="redirectAction">staff/mplan</result>
+		</action>
+		
+		<action name="stat" class="action.ManagerAction" method="showStat">
+			<result name="success">/WEB-INF/staff/Stat.jsp</result>
+		</action>
+		
+		<action name="stata" class="action.ManagerAction" method="showStata">
+			<result name="success">/WEB-INF/staff/Stata.jsp</result>
+		</action>
+		
+		
+	</package>
+
+
+	
+
+</struts>
+

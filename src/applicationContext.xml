@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+	<!-- 定义数据源Bean，使用C3P0数据源实现，并注入数据源的必要信息 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/yang1?autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+	<!-- 定义Hibernate的SessionFactory，SessionFactory需要依赖数据源，注入dataSource -->
+	<bean id="sessionFactory" 
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		p:dataSource-ref="dataSource">
+		<!-- mappingResources用来列出全部映射文件 -->
+		<property name="annotatedClasses">
+			<list>
+				<!-- 以下用来列出所有的PO类-->
+				<value>model.BankAccount</value>
+				<value>model.Customer</value>
+				<value>model.PayRecord</value>
+				<value>model.Staff</value>
+				<value>model.Store</value>
+				<value>model.Working</value>
+				<value>model.Commodity</value>
+				<value>model.Inventory</value>
+				<value>model.PlanCommodity</value>
+				<value>model.SaleCommodity</value>
+				<value>model.SalePlan</value>
+				<value>model.SaleRecord</value>
+			</list>
+		</property>
+		<!-- 定义Hibernate SessionFactory的属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<!-- 指定Hibernate的连接方言 -->
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<!--是否根据Hiberante映射创建数据表 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>				
+			</props>
+		</property>
+	</bean>
+	<!-- 定义Service组件，并将DAO组件注入Service组件 -->	
+ 	<bean id="CustomerService" class="service.CustomerService"
+		p:cd-ref="customer" p:prd-ref="payrecord"/>
+	
+	<bean id="StaffService" class="service.StaffService"
+		p:sd-ref="staff" p:std-ref="store" p:wd-ref="working"/>
+		
+	<bean id="PayService" class="service.PayService"
+		p:cd-ref="customer" p:prd-ref="payrecord" p:bd-ref="bank"/>
+		
+	<bean id="SaleService" class="service.SaleService"
+		p:cd-ref="customer" p:srd-ref="salerecord" p:spd-ref="saleplan" p:id-ref="inventory" p:cod-ref="commodity"/>
+		
+	<bean id="StatsService" class="service.StatsService"
+		p:sd-ref="stats"/>
+		
+	<!-- 定义DAO组件，并将SessionFactory注入DAO组件 -->		
+	<bean id="bank" class="dao.impl.BankDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="payrecord" class="dao.impl.PayRecordDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="customer" class="dao.impl.CustomerDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="staff" class="dao.impl.StaffDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="working" class="dao.impl.WorkingDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/> 
+		
+	<bean id="store" class="dao.impl.StoreDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="commodity" class="dao.impl.CommodityDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+	
+	<bean id="inventory" class="dao.impl.InventoryDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="saleplan" class="dao.impl.SalePlanDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="salerecord" class="dao.impl.SaleRecordDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+		
+	<bean id="stats" class="dao.impl.StatsDaoImpl"
+		p:sessionFactory-ref="sessionFactory"/>
+	
+	
+	<!-- 配置Hibernate的局部事务管理器，使用HibernateTransactionManager类 -->
+	<!-- 该类是PlatformTransactionManager接口针对采用Hibernate的特定实现类 -->
+	<!-- 配置HibernateTransactionManager需依赖注入SessionFactory -->
+	<bean id="transactionManager" 
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+		p:sessionFactory-ref="sessionFactory"/>
+
+<tx:annotation-driven transaction-manager="transactionManager"/>
+
+<!-- 配置事务增强处理Bean,指定事务管理器 -->
+<tx:advice id="txAdvice" 
+	transaction-manager="transactionManager">
+	<!-- 用于配置详细的事务定义 -->
+	<tx:attributes>
+		<!-- 所有以'get'开头的方法是read-only的 -->
+		<tx:method name="get*" read-only="true"/>
+		<!-- 其他方法使用默认的事务设置，指定超时时长为5秒 -->
+		<tx:method name="*" isolation="DEFAULT"
+			propagation="REQUIRED" timeout="5"/>
+	</tx:attributes>
+</tx:advice>
+<!-- AOP配置的元素 -->
+
+	
+</beans>
